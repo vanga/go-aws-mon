@@ -1,4 +1,5 @@
 GOPATH=$(CURDIR)/godeps/
+GOBIN=$(CURDIR)/godeps/bin
 
 default: godeps build
 

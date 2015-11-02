@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
-	"github.com/aws/aws-sdk-go/aws/awsutil"
+	//"github.com/aws/aws-sdk-go/aws/awsutil"
 	"github.com/aws/aws-sdk-go/service/cloudwatch"
 	"io/ioutil"
 	"log"
@@ -26,27 +26,7 @@ func getDimensions(metadata map[string]string) (ret []*cloudwatch.Dimension) {
 		_ret = append(_ret, &dim)
 	}
 
-	imageIdName := "ImageId"
-	imageIdValue, ok := metadata["imageId"]
-	if ok {
-		dim := cloudwatch.Dimension{
-			Name:  aws.String(imageIdName),
-			Value: aws.String(imageIdValue),
-		}
-		_ret = append(_ret, &dim)
-	}
-
-	instanceTypeName := "InstanceType"
-	instanceTypeValue, ok := metadata["instanceType"]
-	if ok {
-		dim := cloudwatch.Dimension{
-			Name:  aws.String(instanceTypeName),
-			Value: aws.String(instanceTypeValue),
-		}
-		_ret = append(_ret, &dim)
-	}
-
-	fileSystemName := "FileSystem"
+	fileSystemName := "Filesystem"
 	fileSystemValue, ok := metadata["fileSystem"]
 	if ok {
 		dim := cloudwatch.Dimension{
@@ -63,7 +43,7 @@ func addMetric(name, unit string, value float64, dimensions []*cloudwatch.Dimens
 	_metric := cloudwatch.MetricDatum{
 		MetricName: aws.String(name),
 		Unit:       aws.String(unit),
-		Value:      aws.Double(value),
+		Value:      aws.Float64(value),
 		Dimensions: dimensions,
 	}
 	metricData = append(metricData, &_metric)
@@ -72,7 +52,7 @@ func addMetric(name, unit string, value float64, dimensions []*cloudwatch.Dimens
 
 func putMetric(metricdata []*cloudwatch.MetricDatum, namespace, region string) error {
 
-	svc := cloudwatch.New(&aws.Config{Region: region})
+	svc := cloudwatch.New(&aws.Config{Region: aws.String(region)})
 
 	metric_input := &cloudwatch.PutMetricDataInput{
 		MetricData: metricdata,
@@ -87,7 +67,7 @@ func putMetric(metricdata []*cloudwatch.MetricDatum, namespace, region string) e
 			return err
 		}
 	}
-	log.Println(awsutil.StringValue(resp))
+	log.Println(resp)
 	return nil
 }
 

@@ -19,7 +19,7 @@ func main() {
 	isDiskSpaceAvail := flag.Bool("disk-space-avail", false, "Disk Space Available(bytes)")
 	isDiskInodeUtil := flag.Bool("disk-inode-util", false, "Disk Inode Utilization(percent)")
 
-	ns := flag.String("namespace", "Linux/System", "CloudWatch metric namespace (required)(It is always EC2)")
+	ns := flag.String("namespace", "System/Linux", "CloudWatch metric namespace (required)(It is always EC2)")
 	diskPaths := flag.String("disk-path", "/", "Disk Path")
 
 	flag.Parse()
@@ -78,19 +78,19 @@ func main() {
 		metadata["fileSystem"] = val
 		dims := getDimensions(metadata)
 		if *isDiskSpaceUtil {
-			metricData, err = addMetric("DiskUtilization", "Percent", diskspaceUtil, dims, metricData)
+			metricData, err = addMetric("DiskSpaceUtilization", "Percent", diskspaceUtil, dims, metricData)
 			if err != nil {
 				log.Fatal("Can't add Disk Utilization metric: ", err)
 			}
 		}
 		if *isDiskSpaceUsed {
-			metricData, err = addMetric("DiskUsed", "Bytes", float64(diskspaceUsed), dims, metricData)
+			metricData, err = addMetric("DiskSpaceUsed", "Bytes", float64(diskspaceUsed), dims, metricData)
 			if err != nil {
 				log.Fatal("Can't add Disk Used metric: ", err)
 			}
 		}
 		if *isDiskSpaceAvail {
-			metricData, err = addMetric("DiskAvail", "Bytes", float64(diskspaceAvail), dims, metricData)
+			metricData, err = addMetric("DiskSpaceAvail", "Bytes", float64(diskspaceAvail), dims, metricData)
 			if err != nil {
 				log.Fatal("Can't add Disk Available metric: ", err)
 			}
